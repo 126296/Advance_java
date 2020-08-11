@@ -1,0 +1,156 @@
+//index.html
+
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Login page</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <form method="get" action="signin" >
+        <div>Login Here</div>
+        Enter UserName<input type="text" name="txtId"><br>
+ Enter Password<input type="password" name="txtPass"><br>
+ <input type="submit" value="login" ></form>
+        
+        
+       
+        
+
+    </body>
+</html>
+
+
+
+============================================================================================
+//login.java
+
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
+//import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+@WebServlet(urlPatterns = {"/login"})
+public class login extends HttpServlet {
+
+    /**
+     *
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws javax.servlet.ServletException
+     */
+    @Override
+        public void service(HttpServletRequest request,HttpServletResponse response)throws IOException,ServletException
+        {
+       RequestDispatcher rd;
+            
+   response.setContentType("text/html;charset=UTF-8");
+ PrintWriter pw = response.getWriter();
+ pw.println("<html><head><title>Servlet LoginServlet</title></head>");
+ 
+  
+ String uname = request.getParameter("txtId");
+ String upass = request.getParameter("txtPass");
+ 
+ 
+ if(uname.equals("smit") && upass.equals("smit123"))
+ {
+ pw.println("<body bgcolor=green >");
+ rd=request.getRequestDispatcher("vallidpage");
+rd.forward(request,response);
+ pw.println("<h1> Hello"+uname+"</h1>");
+ }
+ else{
+pw.println("<body bgcolor=red >");
+pw.println("<h1> Login Failed!! </h1>");
+ 
+ pw.println("</body></html>");
+ rd=request.getRequestDispatcher("/index.html");
+ }
+rd.include(request,response);
+   }
+}
+
+===========================================================================================================================
+//vallidpage.java
+
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author Hp
+ */
+@WebServlet(urlPatterns = {"/vallidpage"})
+public class vallidpage extends HttpServlet {
+    @Override
+    public void service(HttpServletRequest request,HttpServletResponse response)throws IOException,ServletException
+    {
+        
+        PrintWriter pw=response.getWriter();
+        pw.println("<body bgcolor=green >");
+        pw.println("<h1> Login Successful!! </h1>");
+       
+    }
+}
+
+
+=============================================================================================================================
+//web.xml
+
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+	 version="3.1">
+    
+   
+    <servlet>
+        <servlet-name>login</servlet-name>
+        <servlet-class>login</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>login</servlet-name> 
+        <url-pattern>/signin</url-pattern>
+    </servlet-mapping>  
+    
+    
+  <servlet>
+        <servlet-name>vallidpage</servlet-name>
+        <servlet-class>vallidpage</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>vallidpage</servlet-name> 
+        <url-pattern>/vallidpage</url-pattern>
+    </servlet-mapping>
+</web-app>
+

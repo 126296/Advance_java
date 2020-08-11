@@ -1,0 +1,309 @@
+->index.html
+
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>bill</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+    <center>
+        <h1> Bill Generation </h1>
+        <form method="get" action="calculate">
+        Enter Customer Number : 
+        <input type="text" name="cnum"><br><br>
+        Enter Name :
+        <input type="text" name="cname"><br><br>
+        Enter Customer Address : 
+        <input type="text" name="cadrs"><br><br>
+        Enter Bill Duration (In Month): 
+        <input type="text" name="cdur"><br><br>
+        Enter Units : 
+        <input type="text" name="cunit"><br><br>
+        <input type="submit" value="Enter">
+        </form>
+    </center>
+        
+        
+            
+    </body>
+</html>
+==============================================================================================================================
+->calculate.java
+
+
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author Hp
+ */
+public class calculate extends HttpServlet {
+
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param req
+     * @param res
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    protected void processRequest(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+        res.setContentType("text/html;charset=UTF-8");
+     
+         res.setContentType("text/html;charset=UTF-8");
+        res.setContentType("text/html");
+            String num = req.getParameter("cnum");
+            String name = req.getParameter("cname");
+            String addr = req.getParameter("cadrs");
+            String dur = req.getParameter("cdur");
+            int unit = Integer.parseInt(req.getParameter("cunit"));
+            int bunit = 100;
+            
+            float amo = bunit * 20; 
+            float per = amo * 18 / 100;
+            float Payable_amo ;
+            float first,second_1,second_2,second_final ;
+            PrintWriter pw = res.getWriter();
+
+
+            if ( unit <= 100)
+            {
+                Payable_amo = amo + per;
+            }
+            else if(unit > 100 && unit <=280 )
+            {
+                first = amo + per ;
+                second_1 = (unit - bunit)  * 22 ;
+                second_2 = second_1 * 18 /100 ;
+                second_final = second_1 + second_2 ;
+                
+                Payable_amo = first + second_final; 
+            }
+            else
+            {
+                first = amo + per ;
+                second_1 = (unit - bunit) * 25 ;
+                second_2 = second_1 * 18 /100 ;
+                second_final = second_1 + second_2 ;
+                
+                Payable_amo = first + second_final;
+            }
+            
+            
+    
+            ServletContext context=getServletContext();  
+            context.setAttribute("num",num);
+            context.setAttribute("name",name);
+            context.setAttribute("addr",addr);
+            context.setAttribute("dur",dur);
+            context.setAttribute("unit",unit);
+            context.setAttribute("pamo",Payable_amo);
+            
+            res.sendRedirect("bills");
+        
+    }
+
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
+
+}
+
+==============================================================================================================================
+->bills.java
+
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author Hp
+ */
+public class bills extends HttpServlet {
+
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+     protected void processRequest(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException 
+    {
+        response.setContentType("text/html;charset=UTF-8");
+        
+            PrintWriter out = response.getWriter();
+            
+            ServletContext con=getServletContext();  
+            String num = (String)con.getAttribute("num");
+            String name = (String)con.getAttribute("name");
+            String addr = (String)con.getAttribute("addr");
+            String dur = (String)con.getAttribute("dur");
+            int unit = (int)con.getAttribute("unit");
+            float amo = (float)con.getAttribute("pamo");
+            
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet DisplayBill</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<center>");
+            out.println("<h1>Your Bill</h1>");
+            out.println("<h1>Customer Number : </h1>" + num);
+            out.println("<h1>Customer Name : </h1>" + name);
+            out.println("<h1>Customer Address : </h1>" + addr);
+            out.println("<h1>Bill Duration (In Month): </h1>" + dur);
+            out.println("<h1>Used Units : </h1>" + unit);
+            out.println("<h1>Payable Amount : </h1>" + amo);
+            out.println("</center>");
+            out.println("</body>");
+            out.println("</html>");
+            
+           PrintWriter pw = response.getWriter();
+            
+            pw.println("");
+    }
+
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    /**
+     * Handles the HTTP <code>GET</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
+
+}
+
+==============================================================================================================================
+->web.xml
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    
+    <servlet>
+        <servlet-name>calculate</servlet-name>
+        <servlet-class>calculate</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>bills</servlet-name>
+        <servlet-class>bills</servlet-class>
+    </servlet> 
+    <servlet-mapping>
+        <servlet-name>calculate</servlet-name>
+        <url-pattern>/calculate</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>bills</servlet-name>
+        <url-pattern>/bills</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+</web-app>

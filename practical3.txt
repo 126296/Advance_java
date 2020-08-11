@@ -1,0 +1,166 @@
+//index.html
+
+
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Login</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        
+        
+        <form method="get" action="loginPage">
+         <div>Login Here</div> <br>  
+        Enter Username
+        <input type="text" name="uname"><br>
+        Enter Password
+        <input type="password" name="upass"><br>
+    <input type="submit" value="login">
+        </form>
+    </body>
+</html>
+
+
+=====================================================================================================
+//loginServlet.java
+
+
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author Hp
+ */
+@WebServlet(urlPatterns = {"/loginServlet"})
+public class loginServlet extends HttpServlet {
+
+    
+  public void service(HttpServletRequest req,HttpServletResponse res) throws IOException, ServletException
+  {
+        res.setContentType("text/html");
+        String uname = req.getParameter("uname");
+        String upass = req.getParameter("upass");
+        
+        
+        ServletContext ctx=getServletContext();
+        
+        String str =ctx.getInitParameter("uname");
+        String str1 =ctx.getInitParameter("upass");
+        PrintWriter pw=res.getWriter();
+        if(str.equals(uname) && str1.equals(upass))
+        {
+            
+            RequestDispatcher rd=req.getRequestDispatcher("wlc");
+            rd.forward(req, res);
+        }
+        else
+        {
+           pw.println("<font color='red'>");
+           pw.println("Oops...!--login failed please enter valid username and password");
+           pw.println("</font> ");
+           RequestDispatcher rd=req.getRequestDispatcher("/index.html");
+           rd.include(req,res);
+        }
+  }  
+}
+
+==============================================================================================================================
+//validpage.java
+
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author Hp
+ */
+@WebServlet(urlPatterns = {"/validpage"})
+public class validpage extends HttpServlet {
+
+     @Override
+     public void service(HttpServletRequest req,HttpServletResponse res)throws IOException,ServletException
+    {
+        
+        PrintWriter pw = res.getWriter();
+        ServletContext ctx = getServletContext();
+        
+        String str = ctx.getInitParameter("uname");
+        
+        pw.println("Greeting From Welcome Page "+str);
+        
+      /*  PrintWriter pw=res.getWriter();
+        pw.println("<body bgcolor=green >");
+        pw.println("<h1> Login Successful!! </h1>");*/
+       
+    }
+}
+
+========================================================================================================================
+
+//web.xml
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app>
+   
+     <servlet>
+        <servlet-name>loginServlet</servlet-name>
+        <servlet-class>loginServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>loginServlet</servlet-name>
+        <url-pattern>/loginPage</url-pattern>
+    </servlet-mapping>
+    
+    
+    <context-param>
+        <param-name>uname</param-name>
+        <param-value>smit</param-value>
+    </context-param>
+    <context-param>
+        <param-name>upass</param-name>
+        <param-value>smit123</param-value>
+    </context-param>
+    
+    <servlet>
+        <servlet-name>validpage</servlet-name>
+        <servlet-class>validpage</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>validpage</servlet-name>
+        <url-pattern>/wlc</url-pattern>
+    </servlet-mapping>
+   
+</web-app>
