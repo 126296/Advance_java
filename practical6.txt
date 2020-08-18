@@ -1,0 +1,164 @@
+->index.html
+
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <fieldset style="background-color: darkgray">
+        <form  method="get" action="Input">
+            
+            <h1>User Input Form</h1>
+          
+            <fieldset style="width:300px"><legend>personal details</legend>
+            Name: <input type="text" name="name"><br><br>
+            Password: <input type="password" name="password"><br><br>
+            Gender: <input type="radio" name="gender" value="male">Male <input type="radio" name="gender" value="female">Female<br><br>
+            Age: <input type="number" name="age"></fieldset>
+            <fieldset style="width:300px"><legend>language</legend>
+                <input type="checkbox" name="c">c<input type="checkbox" name="csharp">c#<input type="checkbox" name="java">java</fieldset>
+                <fieldset style="width:300px"><legend>instruction</legend>
+                <textarea name="inst" rows="5" cols="30">Enter Details...</textarea></fieldset>
+                <input type="submit" style="background-color: darkgreen" value="Submit">
+                <input type="button" style="background-color: darkred" value="Reset">
+            
+        </form>
+            </fieldset>
+    </body>
+</html>
+
+
+==============================================================================================================================
+->Translate.java
+
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author Hp
+ */
+public class Translate extends HttpServlet {
+
+    public void service(HttpServletRequest req,HttpServletResponse res)throws IOException,ServletException
+    {
+         res.setContentType("text/html");
+        PrintWriter pw=res.getWriter();
+        int i;
+        String name=req.getParameter("name");
+        String password=req.getParameter("password");
+        String gender=req.getParameter("gender");
+        int age=Integer.parseInt(req.getParameter("age"));
+        String language=req.getParameter("language");
+        //String language=req.getParameter("language");
+        String inst=req.getParameter("inst");
+       
+                  
+        
+        if(req.getParameter("c")!=null)
+            language="c";
+        
+        if(req.getParameter("csharp")!=null)
+            language=language+"csharp";
+        
+        if(req.getParameter("java")!=null)
+            language=language+"java";
+        
+        pw.println("<a href='EchoServlet?name="+name+"&password="+password+"&gender="+gender+"&age="+age+"&language="+language+"&inst="+inst+"'>Click here</a>");
+      
+     
+       
+    
+    }
+
+}
+==============================================================================================================================
+->EchoServlet.java
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author Hp
+ */
+public class EchoServlet extends HttpServlet {
+
+    public void service(HttpServletRequest req,HttpServletResponse res)throws IOException,ServletException
+    {
+      
+        PrintWriter pw=res.getWriter();
+         String name=req.getParameter("name");
+        String password=req.getParameter("password");
+        String gender=req.getParameter("gender");
+        int age=Integer.parseInt(req.getParameter("age"));
+        String language=req.getParameter("language");
+        //String l=req.getParameter("language");
+        String inst=req.getParameter("inst");
+        
+        pw.println("name="+name);
+        pw.println("password="+password);
+        pw.println("gender="+gender);
+        pw.println("age="+age);
+        pw.println("language="+language);
+        pw.println("instruction="+inst);
+    }
+
+  
+}
+==============================================================================================================================
+->web.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <servlet>
+        <servlet-name>EchoServlet</servlet-name>
+        <servlet-class>EchoServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Translate</servlet-name>
+        <servlet-class>Translate</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EchoServlet</servlet-name>
+        <url-pattern>/EchoServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Translate</servlet-name>
+        <url-pattern>/Input</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+</web-app>
