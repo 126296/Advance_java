@@ -1,0 +1,111 @@
+->index.html
+
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Colorcode</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <form method="post" action="input">
+            Input ColorCode:
+            <input type="text" name="colorcode">
+            <input type="submit" value="submit">
+            
+            </form>
+    </body>
+</html>
+
+==============================================================================================================================
+
+->input.java
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author Hp
+ */
+public class input extends HttpServlet {
+
+     public void service(HttpServletRequest req, HttpServletResponse res) throws IOException
+    {
+        String c1color=req.getParameter("colorcode");
+        
+        Cookie c1=new Cookie("c1",c1color);
+        
+        c1.setMaxAge(10);
+        res.addCookie(c1);
+        PrintWriter pw=res.getWriter();
+        pw.print("<a href='print'>print color</a>");
+    }
+}
+
+=============================================================================================================================
+->print.java
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author Hp
+ */
+public class print extends HttpServlet {
+
+     public void service(HttpServletRequest req, HttpServletResponse res) throws IOException
+    {
+       // String c1color=req.getParameter("color");
+        String color=null;
+        res.setContentType("text/html");
+        PrintWriter pw=res.getWriter();
+        Cookie c[]=req.getCookies();
+        //String c1=c[0].getValue();
+        
+        
+        for(Cookie c1:c)
+        {
+            String temp=c1.getName();
+                if(temp.equals("c1"))
+                {
+                    color=c1.getValue();
+
+                }
+                
+        }
+       pw.println("<body style=\"background-color:"+color+"\">");
+        //pw.println("<body BGCOLOR=c[0]>"+c1);
+        
+        
+    }
+}
+
