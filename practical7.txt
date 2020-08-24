@@ -1,0 +1,143 @@
+->index.html
+
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>quiz</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+         <form method="post" action="questions">
+            <h3>Advance Java Quiz</h3>
+            Enrollment No: <input type="text" name="enro"><br><br>
+            Division: <input type="radio" name="division" value="A">A <input type="radio" name="division" value="B">B <br><br><br>
+            1. A deployment descriptor describes....<br><br>
+            <input type="radio" name="que1" value="wcrs">Web component request settings<br><br> 
+            <input type="radio" name="que1" value="wcs">Web component settings<br><br>
+            <input type="radio" name="que1" value="wcrro">Web component request and response objects<br><br>
+            <input type="radio" name="que1" value="wcrs">Web component response settings<br><br><br>
+            2. In which form method hidden form field will work?<br><br>
+            <input type="radio" name="que2" value="GET">GET<br><br> 
+            <input type="radio" name="que2" value="POST">POST<br><br>
+            <input type="radio" name="que2" value="Both">Both<br><br>
+            <input type="radio" name="que2" value="None Of Above">None Of Above<br><br><br>
+            3. Servlet are used to program which component in a web application?<br><br>
+            <input type="radio" name="que3" value="client">client<br><br> 
+            <input type="radio" name="que3" value="server">server<br><br>
+            <input type="radio" name="que3" value="tomcat">tomcat<br><br>
+            <input type="radio" name="que3" value="applet">applet<br><br><br>
+            4. What type of protocol is HTTP?<br><br>
+            <input type="radio" name="que4" value="stateless">stateless<br><br> 
+            <input type="radio" name="que4" value="stateful">stateful<br><br>
+            <input type="radio" name="que4" value="transfer protocol">transfer protocol<br><br>
+            <input type="radio" name="que4" value="information protocol">information protocol<br><br><br>
+            5. Which symbol is used to seperate parameters in URL rewriting?<br><br>
+            <input type="radio" name="que5" value="@">@<br><br> 
+            <input type="radio" name="que5" value="&">&<br><br>
+            <input type="radio" name="que5" value="?">?<br><br>
+            <input type="radio" name="que5" value=",">,<br><br>
+            <input type="submit" value="Submit Answers">
+        </form>
+    </body>
+</html>
+==============================================================================================================================
+->questions.java
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author Hp
+ */
+@WebServlet(urlPatterns = {"/questions"})
+public class questions extends HttpServlet {
+        
+        public void service(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException
+    {
+        String q1=req.getParameter("que1");
+        String q2=req.getParameter("que2");
+        String q3=req.getParameter("que3");
+        String q4=req.getParameter("que4");
+        String q5=req.getParameter("que5");
+        String enro=req.getParameter("enro");
+        String div=req.getParameter("division");
+        
+        res.setContentType("text/html");
+        PrintWriter pw=res.getWriter();
+        pw.println("<form method='post' action='answers'>");
+        pw.println("Hello "+enro+" from division "+div+".");
+        pw.println("<br>Your quiz is submited.");
+        pw.println("<br>Click below button to see your score.");
+        pw.println("<input type='hidden' name='q1' value='"+q1+"'>");
+        pw.println("<input type='hidden' name='q2' value='"+q2+"'>");
+        pw.println("<input type='hidden' name='q3' value='"+q3+"'>");
+        pw.println("<input type='hidden' name='q4' value='"+q4+"'>");
+        pw.println("<input type='hidden' name='q5' value='"+q5+"'>");
+        pw.println("<br><br><input type=submit value='View Result'>");
+    }
+        
+        
+    }
+        
+
+       
+==============================================================================================================================->answers.java
+
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author Hp
+ */
+public class answers extends HttpServlet {
+         public void service(HttpServletRequest req, HttpServletResponse res) throws IOException
+    {
+        int totalmarks=0;
+        
+        if(req.getParameter("q1").equals("wcs"))
+            totalmarks++;
+        if(req.getParameter("q2").equals("Both"))
+            totalmarks++;
+        if(req.getParameter("q3").equals("server"))
+            totalmarks++;
+        if(req.getParameter("q4").equals("stateless"))
+            totalmarks++;
+        if(req.getParameter("q5").equals("&"))
+            totalmarks++;
+        
+        PrintWriter pw=res.getWriter();
+        pw.println("Your total score is "+totalmarks+ " out of 5");
+      
+    }
+}
+

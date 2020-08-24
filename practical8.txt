@@ -1,0 +1,166 @@
+->index.html
+
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Shopping-Cart</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+        <body>
+        <form method="get" action="Additem">
+            <center>
+                <h1>My Shopping Store</h1><br><br><br>
+                <h3>Mi 10000mAH Power Bank 2i (Black) with Fast Charging</h3>
+                <h4>Rs.899</h4>
+                <input type="checkbox" name="add1">Add To Cart<br><br>
+                <h3>Samsung Galaxy M30s (Black, 4GB RAM, 64GB Storage)</h3>
+                <h4>Rs.13,999</h4>
+                <input type="checkbox" name="add2">Add To Cart<br><br>
+                <h3>Apple iPhone 11 Pro (256GB) - Midnight Green</h3>
+                <h4>Rs.1,16,400</h4>
+                <input type="checkbox" name="add3">Add To Cart<br><br>
+                <input type="submit" value="Proceed To Buy">
+            </center>
+        </form>
+    </body>
+</html>
+
+==============================================================================================================================
+
+->Additem.java
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+import java.io.IOException;
+import java.io.PrintWriter;
+//import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author Hp
+ */
+public class Additem extends HttpServlet {
+
+     public void service(HttpServletRequest req, HttpServletResponse res) throws IOException
+    {
+        String p1name=null;
+        int p1price=0;
+        String p2name=null;
+        int p2price=0;
+        String p3name=null;
+        int p3price=0;
+        PrintWriter pw=res.getWriter();
+        if(req.getParameter("add1")!=null)
+        {
+            p1name="Mi 10000mAH Power Bank 2i (Black) with Fast Charging";
+            p1price=899;
+        }
+        if(req.getParameter("add2")!=null)
+        {
+            p2name="Samsung Galaxy M30s (Black, 4GB RAM, 64GB Storage)";
+            p2price=14999;
+        }
+        if(req.getParameter("add3")!=null)
+        {
+            p3name="Apple iPhone 11 Pro (256GB) - Midnight Green";
+            p3price=116400;
+        }
+        Cookie p1=new Cookie("p1",p1price+","+p1name);
+        Cookie p2=new Cookie("p2",p2price+","+p2name);
+        Cookie p3=new Cookie("p3",p3price+","+p3name);
+        res.addCookie(p1);
+        res.addCookie(p2);
+        res.addCookie(p3);
+        res.setContentType("text/html");
+        pw.println("<a href='Printcost'>View Your Added Product</a>");
+    }
+   
+}
+
+==============================================================================================================================
+
+->Printcost.java
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author Hp
+ */
+public class Printcost extends HttpServlet {
+
+    
+    public void service(HttpServletRequest req, HttpServletResponse res) throws IOException
+    {
+        res.setContentType("text/html");
+        PrintWriter pw=res.getWriter();
+        Cookie[] c=req.getCookies();
+        String p1=c[0].getValue();
+        String p2=c[1].getValue();
+        String p3=c[2].getValue();
+        pw.println("Price,Product Name<br><br>");
+        if(!p1.equals("0,null"))
+            pw.println(p1+"<br>");
+        if(!p2.equals("0,null"))
+            pw.println(p2+"<br>");
+        if(!p3.equals("0,null"))
+            pw.println(p3+"<br>");
+    }
+
+    
+}
+==============================================================================================================================
+
+->web.xml
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <servlet>
+        <servlet-name>Additem</servlet-name>
+        <servlet-class>Additem</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Printcost</servlet-name>
+        <servlet-class>Printcost</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Additem</servlet-name>
+        <url-pattern>/Additem</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Printcost</servlet-name>
+        <url-pattern>/Printcost</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+</web-app>
