@@ -1,0 +1,98 @@
+->index.html
+
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Session Date-Time</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <a href="sessioninfo">click here to see session time related information</a>
+    </body>
+</html>
+
+==============================================================================================================================
+->sessioninfo.java
+
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+/**
+ *
+ * @author Hp
+ */
+public class sessioninfo extends HttpServlet {
+
+    public void service(HttpServletRequest req,HttpServletResponse res)throws IOException
+    {
+        HttpSession session = req.getSession(true);
+        Date createtime=new Date(session.getCreationTime());
+        Date lastaccesstime=new Date(session.getLastAccessedTime());
+        
+        int visitcount=0;
+        String visitcountkey=new String("visitcount");
+        String userIDkey=new String("userid");
+        String userID=new String("smit1234");
+        
+        if(session.isNew())
+        {
+            session.setAttribute(userIDkey,userID);
+            
+        }
+        else
+        {
+            visitcount=(Integer)session.getAttribute(visitcountkey);
+            visitcount=visitcount+1;
+            userID=(String)session.getAttribute(userIDkey);
+        }
+        session.setAttribute(visitcountkey,visitcount);
+        
+        res.setContentType("Text/html");
+        PrintWriter pw=res.getWriter();
+        
+        //pw.println("getsession id="+session.getId());
+        pw.println("create time="+createtime);
+        pw.println("lastaccess time="+lastaccesstime);
+        pw.println("userid="+userID);
+        pw.println("visitcount="+visitcount);
+        
+        
+        
+        
+        
+        
+        
+    }
+}
+==============================================================================================================================
+->web.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <servlet>
+        <servlet-name>sessioninfo</servlet-name>
+        <servlet-class>sessioninfo</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>sessioninfo</servlet-name>
+        <url-pattern>/sessioninfo</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            1
+        </session-timeout>
+    </session-config>
+</web-app>
