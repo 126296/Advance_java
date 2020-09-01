@@ -1,0 +1,230 @@
+->index.html
+
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Session practice</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body bgcolor="orange">
+        <div><h3>Home Page</h3></div><br>
+        <a href="login.html">Log-in</a><br>
+        <a href="./profile">Profile page</a><br>
+        <a href="./logout">Log-out</a><br>
+        
+         
+    </body>
+</html>
+=================================================================
+->login.html
+
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>User Login</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body bgcolor="yellow">
+        
+        <div>Login Here</div>
+        <form method="post" action="login">
+   
+        Enter UserName:
+        <input type="text" name="username"><br>
+        Enter Password:
+        
+        <input type="password" name="password"><br>
+        <input type="submit" style="background-color:blue" value="login" >
+ 
+        </form>
+    
+        
+    </body>
+</html>
+==============================================================================================================================
+->login.java
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+/**
+ *
+ * @author Hp
+ */
+public class login extends HttpServlet {
+
+    @Override
+    public void service(HttpServletRequest req,HttpServletResponse res)throws IOException
+    {
+        res.setContentType("text/html");
+        HttpSession session=req.getSession();
+        String uname=req.getParameter("username");
+        String upass=req.getParameter("password");
+       
+        PrintWriter pw=res.getWriter();
+        pw.println("<body bgcolor:red>");        
+        if(upass.equals("admin"))
+        {
+            session.setAttribute("uname",uname);
+            res.sendRedirect("./profile");
+            
+        }
+        else
+        {
+            res.sendRedirect("login.html");
+        }
+                
+    }
+}
+=================================================================
+->profile.java
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+/**
+ *
+ * @author Hp
+ */
+public class profile extends HttpServlet {
+
+    
+     public void service(HttpServletRequest req,HttpServletResponse res)throws IOException
+     {
+         HttpSession session=req.getSession(false);
+        
+         
+         PrintWriter pw=res.getWriter();
+         
+         if(session!=null)
+         {
+             res.setContentType("html/text");
+             String uname=(String) session.getAttribute("uname");
+             //pw.println("<br><center><h3> welcome To My Resume "+uname+"</center><h3><br>");
+             pw.println("<br><center><h3> Welcome To My Resume</center></h3><br>");
+             
+             pw.println("<br><h3>Personal Information</h3><br>");
+             pw.println("Name:"+uname+"<br>");
+             pw.println("Age : 19"+"<br>");
+             pw.println("Contact number:38598354758"+"<br><br>");
+             pw.println("<h3>Education Information</h3>");
+             pw.println("Education:Integreated Mscit"+"<br>");
+             pw.println("Website : <a href=''>http://smitdonga.xyz/</a><br>");
+             pw.println("<body bgcolor=lightblue>");
+                     
+             
+         
+         }
+         else
+         {
+             res.sendRedirect("./login.html");
+         }
+         //session.invalidate();
+          pw.println("<a href='index.html'>go to login</a>");
+         // pw.println("<a href='./index.html'>Index</a>");
+     }
+}
+=================================================================
+->logout.java
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+/**
+ *
+ * @author Hp
+ */
+public class logout extends HttpServlet {
+
+   public void service(HttpServletRequest req,HttpServletResponse res)throws IOException
+    {
+        HttpSession session=req.getSession(true);
+        session.invalidate();
+        PrintWriter pw=res.getWriter();
+        pw.println("<body bgcolor=red>");
+        pw.println("logout ");
+        pw.println("<a href='index.html'>go to login</a>");
+    }
+}
+=================================================================
+->web.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <servlet>
+        <servlet-name>login</servlet-name>
+        <servlet-class>login</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>profile</servlet-name>
+        <servlet-class>profile</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>logout</servlet-name>
+        <servlet-class>logout</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>login</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>profile</servlet-name>
+        <url-pattern>/profile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>logout</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            60
+        </session-timeout>
+    </session-config>
+</web-app>
